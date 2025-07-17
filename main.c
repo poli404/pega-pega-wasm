@@ -6,14 +6,11 @@ typedef struct {
   int x;
   int y; // position
   int life; // after being caught, takes one down
+  char type; // 'c' chaser or 'p' prey
 } Player;
 
-// STARTER CONFIGURATION
-int initial = 1;
-Player player1 = {142, 142, 3};
-Player player2 = {10, 30, 3};
-Player *prey = &player1;
-Player *chaser = &player2;
+Player player1 = {142, 142, 3, 'p'};
+Player player2 = {10, 30, 3, 'c'};
 
 const uint8_t smiley[] = {
     0b11000011,
@@ -31,13 +28,15 @@ void start() {
 }
 
 void drawBackground() {
-    // Borders
+    //BORDA DA ARENA DE COMBATE
     text("Pega-Pega: the game", 5, 5);
     *DRAW_COLORS = 0x4;
     rect(0, 20, 10, 140);
     rect(0, 20, 154, 10);
     rect(0, 150, 154, 10);
     rect(150, 20, 10, 160);
+    //rect(76, 76, 76, 10);
+    //rect(0, 100, 100, 10);
 }
 
 void draw(int px, int py, int cx, int cy) {
@@ -48,10 +47,10 @@ void draw(int px, int py, int cx, int cy) {
 }
 
 void verify_borders(Player *play) {
-    if ((*play).x < 10) { (*play).x = 10; tone(400, 5, 80, TONE_PULSE1);} // left
-    if ((*play).x > 142) {(*play).x = 142; tone(400, 5, 80, TONE_PULSE1);} // right
-    if ((*play).y < 30) {(*play).y = 30; tone(400, 5, 80, TONE_PULSE1);} // up
-    if ((*play).y > 142) {(*play).y = 142; tone(400, 5, 80, TONE_PULSE1);} // down
+    if ((*play).x < 10) {(*play).x = 10;}
+    if ((*play).x > 142) {(*play).x = 142;}
+    if ((*play).y < 30) {(*play).y = 30;}
+    if ((*play).y > 142) {(*play).y = 142;}
 }
 
 void move(Player *play, uint8_t *gamer) {
@@ -66,67 +65,53 @@ void move(Player *play, uint8_t *gamer) {
     }
 }
 
-int collision(Player *chaser, Player *prey) {
-	int dx = (*chaser).x - (*prey).x;
-	int dy = (*chaser).y - (*prey).y;
-	int sr = 8;
-	return (dx * dx + dy * dy) < (sr * sr);
+void collision(Player *chaser, Player *prey) {
+    if ((*chaser).x == (*prey).x) {
+        (*prey).life--;
+    }
 }
 
 void endGame(){
     *DRAW_COLORS = 0x4;
-    rect(0, 0, 200, 200);
-    *DRAW_COLORS = 0x2;
-    text("GAME OVER!", 30, 60);
-    if (player1.life == 0) {*DRAW_COLORS = 0x2; text("Player 1 perdeu!", 15, 90);}
-    else if (player2.life == 0) {*DRAW_COLORS = 0x2; text("Player 2 perdeu!", 15, 90);}
+    rect(0, 0, 154, 154);
+    *DRAW_COLORS = 0x1;
+    text("GAME OVER!", 0, 76);
 }
 
 void update () {   // desenha e limpa a tela
-    PALETTE[3] = 0xDB8DD0;
-    PALETTE[2] = 0xC562AF;
-    PALETTE[1] = 0xB33791;
-    PALETTE[0] = 0xFEC5F6;
+    PALETTE[3] = 0xeb6b6f;
+    PALETTE[2] = 0x4a2480;
+    PALETTE[1] = 0xc53a9d;
+    PALETTE[0] = 0xfff6d3;
 
-    if (initial) { // initial screen
-        uint8_t gamepad = *GAMEPAD1; // prey
-        *DRAW_COLORS = 0x3;
-        rect(0, 0, 200, 200);
-        *DRAW_COLORS = 0x1;
-        text("Pega-Pega: the game", 5, 20);
-        text("Jogador do canto\ninferior, FUJA!", 15, 60);
-        text("Jogador do canto\nsuperior, PEGUE!", 15, 90);
-        if (BUTTON_1 & gamepad) {
-            initial = 0;
-        }
-    } else {
-        uint8_t gamepad = *GAMEPAD1; // prey
-        uint8_t gamepad2 = *GAMEPAD2; // chaser
+    uint8_t gamepad = *GAMEPAD1;
+    uint8_t gamepad2 = *GAMEPAD2;
+    
+    drawBackground();
+
+    Player *chaser = &player2;
+    Player *prey = &player1;
+
+    if ((*prey).life > 0){
+        move(chaser, &gamepad2);
+        verify_borders(chaser);
+        move(prey, &gamepad);
+        verify_borders(prey);
+        //collision(chaser, prey);
+
         
-        drawBackground();
-
-        if ((*prey).life > 0 && (*chaser).life > 0){
-            move(chaser, &gamepad2);
-            verify_borders(chaser);
-            move(prey, &gamepad);
-            verify_borders(prey);
-            if (collision(chaser, prey)) {
-                (*prey).life--;
-                tone(262 | (523 << 8), 30, 80, TONE_PULSE1 | TONE_MODE3);
-                (*chaser).x = 142;
-                (*chaser).y = 142;
-                (*prey).x = 10;
-                (*prey).y = 30;
-                // switches the chaser and the prey
-                Player *change = chaser;
-                chaser = prey;
-                prey = change;
-            }
-
-            draw(player1.x, player1.y, player2.x, player2.y);
-        } else {
-            endGame();
-        }
-
+        draw(player1.x, player1.y, player2.x, player2.y);
+    } else {
+        endGame();
     }
 }
+
+/*
+int collision(){
+    if ((x_bolinha == x_barrinha || x_bolinha == x_barrinha+8) && (y_bolinha == y_barrinha || y_bolinha == y_barrinha+8)) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+*/
