@@ -60,7 +60,6 @@ void int_to_str(char *buffer, int n) {
     }
 }
 
-
 void start() {
     trace("start");
 }
@@ -142,6 +141,8 @@ void fireShot(Player *shooter, Shot *shot) {
         shot->dx = shooter->dx * 2;
         shot->dy = shooter->dy * 2;
         shot->active = 1;
+        // faz barulinho de tiro :)
+        tone(400 | (523 << 8), 20, 100, TONE_PULSE1 | TONE_MODE3);
     }
 }
 
@@ -161,9 +162,11 @@ void updateShot(Player *player, Shot *shot) {
     // verifica se deu colisão com outro jogador
     if (shot->x >= player->x && shot->x <= (player->x + 8) &&
         shot->y >= player->y && shot->y <= (player->y + 8)) {
-
         shot->active = 0;
         player->life--;
+
+        // barulinho de acertou o tiro
+        tone(60, 10, 100, TONE_PULSE1 | TONE_PAN_LEFT | TONE_PAN_RIGHT);
         return;
     }
     // desenhar o tiro
