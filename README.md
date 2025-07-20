@@ -42,8 +42,8 @@ ou
 ---
 
 ## Controles
-* Player 1 utiliza o Gamepad 1: setas para se mover + tecla Z para atirar;
-* Player 2 utiliza o Gamepad 2: teclas ??? para se mover + tecla Z para atirar;
+* Player 1 utiliza o Gamepad 1: setas para se mover + tecla . para atirar;
+* Player 2 utiliza o Gamepad 2: teclas SDEF para se mover + tecla A para atirar;
 
 ---
 
@@ -55,7 +55,9 @@ ou
 * fireShot()
 * updateShot()
 * drawBackground()
-* draw()
+* drawPLayers()
+* drawLives()
+* endGame()
 * verify_borders()
 
 ## Licença
