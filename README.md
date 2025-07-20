@@ -37,7 +37,7 @@ make
 4. Execute o jogo com:
 ```../w4 watch```
 ou
-```../w4 run cart.wasm```
+```../w4 run ./build/cart.wasm```
 
 ---
 
