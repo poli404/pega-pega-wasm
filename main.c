@@ -68,10 +68,12 @@ void drawBackground() {
     //BORDA DA ARENA DE COMBATE
     //text("Pega-Pega: the game", 5, 5);
     *DRAW_COLORS = 0x4;
-    rect(0, 20, 10, 140);
-    rect(0, 20, 154, 10);
-    rect(0, 150, 154, 10);
-    rect(150, 20, 10, 160);
+    rect(0, 20, 10, 60); // left
+    rect(0, 95, 10, 70);
+    rect(0, 20, 154, 10); // top
+    rect(0, 150, 154, 10); // bottom
+    rect(150, 20, 10, 60); // right
+    rect(150, 95, 10, 70);
 }
 
 void drawPlayers() {
@@ -99,17 +101,23 @@ void drawLives() {
 void endGame(){
     *DRAW_COLORS = 0x1;
     rect(0, 0, 200, 200);
-    *DRAW_COLORS = 0x1;
-    //text("GAME OVER!", 40, 76);
     if (player1.life == 0) {*DRAW_COLORS = 0x3; text("Player 2 won!", 30, 76);}
     if (player2.life == 0) {*DRAW_COLORS = 0x2; text("Player 1 won!", 30, 76);}
+    *DRAW_COLORS = 0x4;
+    text("to play again,\n   press \x81", 30, 110);
 }
 
 void verify_borders(Player *play) {
-    if ((*play).x < 10) {(*play).x = 10;}
-    if ((*play).x > 142) {(*play).x = 142;}
-    if ((*play).y < 30) {(*play).y = 30;}
-    if ((*play).y > 142) {(*play).y = 142;}
+    if ((*play).y > 77 && (*play).y < 88) { // verifies the tunnel
+        if ((*play).x > 154) {(*play).x = 0;}
+        else if ((*play).x < 0) {(*play).x = 154;}
+    }
+    else {
+        if ((*play).x < 10) {(*play).x = 10;}
+        if ((*play).x > 142) {(*play).x = 142;}
+        if ((*play).y < 30) {(*play).y = 30;}
+        if ((*play).y > 142) {(*play).y = 142;}
+    }
 }
 
 void move(Player *play, uint8_t *gamer) {
@@ -154,8 +162,8 @@ void updateShot(Player *player, Shot *shot) {
     // move o tiro, atualizando a posição
     shot->x += shot->dx;
     shot->y += shot->dy;
-    // verifica se saiu do amarelo
-    if (shot->x < 10 || shot->x > 142 || shot->y < 30 || shot->y > 142) {
+    // verifica se saiu do campo
+    if (shot->x < 2 || shot->x > 154 || shot->y < 30 || shot->y > 142) {
         shot->active = 0;
         return;
     }
@@ -186,8 +194,9 @@ void update() {   // desenha e limpa a tela
     if (initial) {
         *DRAW_COLORS = 0x4;
         text("Pega-Pega: the game", 5, 60);
-        text("chase each other\naround and fire!!", 15, 80);
-        if ((gamepad && BUTTON_1) || (gamepad2 && BUTTON_1)) {
+        text("chase each other\naround and fire!", 15, 80);
+        text("press \x80 to fire", 20, 100);
+        if ((gamepad & BUTTON_1) || (gamepad2 & BUTTON_1)) { // X BUTTON
             initial = 0;
         }
     } else {
@@ -210,15 +219,23 @@ void update() {   // desenha e limpa a tela
           if (gamepad2 & BUTTON_1) {
               fireShot(p2, &shot2);
           }
-          updateShot(p2, &shot1); // p2 atira no p1
-          updateShot(p1, &shot2); // p1 atira no p2
+          updateShot(p2, &shot1); // p2 shots p1
+          updateShot(p1, &shot2); // p1 shots p2
           
           drawPlayers();
-          // mostrar vidas na tela
+          // shows the players and lives on screen
           drawLives();
       }
       else {
           endGame();
+          if ((gamepad & BUTTON_2) || (gamepad2 & BUTTON_2)) { //Z BUTTON
+            initial = 1;
+            player1.life = 3; player2.life = 3;
+            player1.dx = 0; player1.dy = 0;
+            player2.dx = 0; player2.dy = 0;
+            player1.x = 142; player1.y = 142;
+            player2.x = 10; player2.y = 30;
+        }
       }
     }
 }
