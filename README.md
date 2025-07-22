@@ -42,7 +42,7 @@ ou
 ---
 
 ## Controles
-* Player 1 utiliza o Gamepad 1: setas para se mover + tecla . para atirar;
+* Player 1 utiliza o Gamepad 1: setas para se mover + tecla X para atirar;
 * Player 2 utiliza o Gamepad 2: teclas SDEF para se mover + tecla A para atirar;
 
 ---
