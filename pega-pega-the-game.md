@@ -1,6 +1,8 @@
 ---
-authors: Ana Paula Crippa and Maria Eduarda Policante
-githubs: anapaulacrippa and poli404
+author1: Ana Paula Crippa
+author2: Maria Eduarda Policante
+github1: anapaulacrippa
+github2: poli404
 date: 2025-07-22
 ---
 
