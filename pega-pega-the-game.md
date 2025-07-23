@@ -1,8 +1,6 @@
 ---
-author1: Ana Paula Crippa
-author2: Maria Eduarda Policante
-github1: anapaulacrippa
-github2: poli404
+author: Ana Paula Crippa, Maria Eduarda Policante
+github: anapaulacrippa, poli404
 date: 2025-07-22
 ---
 
@@ -10,7 +8,6 @@ date: 2025-07-22
 
 This game is all about following each other around and firing!!!
 Once you have your opponent on your sight, FIRE!
-
 You can either play with one keyboard or using NetPlay WASM-4 support.
 
 ## Single keyboard
@@ -20,4 +17,4 @@ You can either play with one keyboard or using NetPlay WASM-4 support.
 
 ## NetPlaying
 
-- Both players use the arrow keys on their own keyboards to move and shoot with their button X.
+- Both players use the arrow keys on their own keyboards to move and shoot with button X.
